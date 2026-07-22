@@ -104,14 +104,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-cozy-pill selection:text-cozy-text">
 
-    <!-- Top Admin Toggle Button -->
-    <div class="fixed top-4 right-4 z-40">
-        <button id="adminToggleBtn" onclick="openAdminModal()" class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 hover:bg-white backdrop-blur-md border border-cozy-border text-cozy-muted text-xs font-semibold shadow-sm transition-all duration-300 hover:text-cozy-terracotta hover:shadow-md">
-            <i class="fa-solid fa-lock text-cozy-terracotta"></i>
-            <span id="adminBtnText">Admin Area</span>
-        </button>
-    </div>
-
     <!-- Background Decorative SVG Elements -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <!-- Top Left Star Doodle -->
@@ -261,173 +253,14 @@
         </div>
     </div>
 
-    <!-- Admin Modal Overlay -->
-    <div id="adminModal" class="fixed inset-0 bg-cozy-text/50 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
-        
-        <!-- Login View Container -->
-        <div id="adminLoginView" class="bg-cozy-card border border-cozy-border rounded-3xl p-6 md:p-8 max-w-sm w-full text-center shadow-floating relative">
-            <button onclick="closeAdminModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-cozy-bg flex items-center justify-center text-cozy-muted hover:text-cozy-text">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+    <!-- Scripts for Form to Email Logic -->
+    <script>
+        // ==========================================
+        // PENGATURAN EMAIL (GANTI DENGAN EMAIL KAMU)
+        // ==========================================
+        const EMAIL_TUJUAN = "EMAIL_KAMU_DISINI"; 
+        // Contoh: const EMAIL_TUJUAN = "mifa@gmail.com";
 
-            <div class="w-12 h-12 rounded-2xl bg-cozy-terracotta/15 flex items-center justify-center text-cozy-terracotta mx-auto mb-3">
-                <i class="fa-solid fa-user-shield text-xl"></i>
-            </div>
-            <h3 class="font-heading text-xl font-bold text-cozy-text mb-1">Admin Mifa’s Corner</h3>
-            <p class="text-cozy-muted text-xs mb-6">Masukkan kata sandi untuk melihat masukan followers</p>
-
-            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <input 
-                    type="password" 
-                    id="adminPassword" 
-                    placeholder="Kata Sandi Admin..." 
-                    class="w-full px-4 py-3 rounded-xl bg-cozy-inner border border-cozy-border text-cozy-text text-center text-sm focus:outline-none focus:border-cozy-terracotta"
-                    required>
-                <div id="loginError" class="text-xs text-red-500 hidden">Kata sandi salah! Coba lagi.</div>
-                <button type="submit" class="w-full py-3 rounded-xl bg-cozy-terracotta hover:bg-cozy-terracotta-hover text-white text-sm font-medium transition-all">
-                    Masuk Dashboard
-                </button>
-            </form>
-            <p class="text-[11px] text-cozy-muted mt-4">Hanya untuk Mifa ♡</p>
-        </div>
-
-        <!-- Dashboard View Container (Expanded) -->
-        <div id="adminDashboardView" class="hidden bg-cozy-card border border-cozy-border rounded-3xl p-6 md:p-8 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-floating relative">
-            
-            <!-- Dashboard Header -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-cozy-border">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-cozy-terracotta/15 flex items-center justify-center text-cozy-terracotta">
-                        <i class="fa-solid fa-inbox text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-cozy-text">Dashboard Feedback</h3>
-                        <p class="text-cozy-muted text-xs">Total Masukan: <span id="totalFeedbackCount" class="font-bold text-cozy-terracotta">0</span></p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <button onclick="toggleEmailSettings()" class="px-3 py-1.5 rounded-lg bg-cozy-pill/60 hover:bg-cozy-pill text-cozy-text text-xs font-medium flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-envelope"></i> Notifikasi Email
-                    </button>
-                    <button onclick="exportFeedbackCSV()" class="px-3 py-1.5 rounded-lg bg-cozy-pill/60 hover:bg-cozy-pill text-cozy-text text-xs font-medium flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-download"></i> Export CSV
-                    </button>
-                    <button onclick="logoutAdmin()" class="px-3 py-1.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 text-xs font-medium flex items-center gap-1 transition">
-                        <i class="fa-solid fa-right-from-bracket"></i> Keluar
-                    </button>
-                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-cozy-bg flex items-center justify-center text-cozy-muted hover:text-cozy-text">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Email Settings Panel (Collapsible) -->
-            <div id="emailSettingsPanel" class="hidden bg-cozy-inner p-4 rounded-xl border border-cozy-border my-3 text-xs space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="font-semibold text-cozy-text"><i class="fa-solid fa-circle-info text-cozy-terracotta"></i> Pengaturan Notifikasi Email</span>
-                    <button onclick="toggleEmailSettings()" class="text-cozy-muted hover:text-cozy-text"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <p class="text-cozy-muted">Ingin menerima setiap feedback langsung ke email kamu? Kamu bisa memasukkan Email Destination di bawah ini untuk link mailto cepat atau mengkonfigurasi Webhook / EmailJS.</p>
-                <div class="flex gap-2 pt-1">
-                    <input type="email" id="targetEmailInput" placeholder="Email kamu (cth: mifa@gmail.com)" class="px-3 py-1.5 rounded-lg bg-cozy-card border border-cozy-border text-cozy-text flex-1">
-                    <button onclick="saveTargetEmail()" class="px-4 py-1.5 bg-cozy-terracotta text-white rounded-lg font-medium hover:bg-cozy-terracotta-hover">Simpan Email</button>
-                </div>
-            </div>
-
-            <!-- Search & Filters -->
-            <div class="flex flex-wrap items-center justify-between gap-3 my-4">
-                <div class="relative flex-1 min-w-[200px]">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-cozy-muted/60 text-xs"></i>
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        placeholder="Cari kata kunci dalam masukan..." 
-                        oninput="filterFeedbacks()"
-                        class="w-full pl-8 pr-4 py-2 rounded-xl bg-cozy-inner border border-cozy-border text-cozy-text text-xs focus:outline-none focus:border-cozy-terracotta">
-                </div>
-                <div class="flex items-center gap-1 bg-cozy-inner p-1 rounded-xl border border-cozy-border text-xs">
-                    <button onclick="setFilter('all')" id="filterAll" class="px-3 py-1 rounded-lg bg-cozy-terracotta text-white font-medium">Semua</button>
-                    <button onclick="setFilter('starred')" id="filterStarred" class="px-3 py-1 rounded-lg text-cozy-muted hover:text-cozy-text">Bintang ⭐</button>
-                </div>
-            </div>
-
-            <!-- Feedback List Container (Scrollable) -->
-            <div id="feedbackListContainer" class="flex-1 overflow-y-auto space-y-3 pr-1">
-                <div class="text-center py-12 text-cozy-muted text-sm">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl text-cozy-terracotta mb-2"></i>
-                    <p>Memuat masukan followers...</p>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Global Variables
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mifas-corner-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyDummyKeyForFallbackPurposeOnly",
-            authDomain: "mifas-corner.firebaseapp.com",
-            projectId: "mifas-corner",
-            storageBucket: "mifas-corner.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123def456"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-        let allFeedbacks = [];
-        let currentFilter = 'all';
-        let unsubscribeSnap = null;
-
-        // Make functions globally available for inline event handlers
-        window.handleFeedbackSubmit = handleFeedbackSubmit;
-        window.updateCharCount = updateCharCount;
-        window.openAdminModal = openAdminModal;
-        window.closeAdminModal = closeAdminModal;
-        window.handleAdminLogin = handleAdminLogin;
-        window.closeSuccessModal = closeSuccessModal;
-        window.logoutAdmin = logoutAdmin;
-        window.toggleStar = toggleStar;
-        window.deleteFeedbackItem = deleteFeedbackItem;
-        window.copyFeedbackText = copyFeedbackText;
-        window.filterFeedbacks = filterFeedbacks;
-        window.setFilter = setFilter;
-        window.exportFeedbackCSV = exportFeedbackCSV;
-        window.toggleEmailSettings = toggleEmailSettings;
-        window.saveTargetEmail = saveTargetEmail;
-
-        window.addEventListener('load', async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    const userCred = await signInWithCustomToken(auth, __initial_auth_token);
-                    currentUser = userCred.user;
-                } else {
-                    const userCred = await signInAnonymously(auth);
-                    currentUser = userCred.user;
-                }
-                console.log("Authenticated user:", currentUser.uid);
-            } catch (err) {
-                console.error("Auth initialization error:", err);
-            }
-
-            // Restore saved admin email setting if present
-            const savedEmail = localStorage.getItem('mifa_target_email');
-            if (savedEmail) {
-                const input = document.getElementById('targetEmailInput');
-                if (input) input.value = savedEmail;
-            }
-        });
 
         async function handleFeedbackSubmit(e) {
             e.preventDefault();
@@ -435,6 +268,12 @@
             const content = contentInput.value.trim();
 
             if (!content) return;
+
+            // Peringatan jika belum ganti email
+            if (EMAIL_TUJUAN === "EMAIL_KAMU_DISINI") {
+                alert("Halo Mifa! Kamu lupa memasukkan emailmu di dalam kode. Cek kodenya lagi ya!");
+                return;
+            }
 
             const submitBtn = document.getElementById('submitBtn');
             const submitBtnText = document.getElementById('submitBtnText');
@@ -446,51 +285,57 @@
             submitBtnIcon.className = "fa-solid fa-spinner fa-spin text-sm";
 
             try {
-                // Mandatory Path Rule: /artifacts/{appId}/public/data/{collectionName}
-                const feedbackCol = collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks');
-                
-                await addDoc(feedbackCol, {
-                    content: content,
-                    createdAt: serverTimestamp(),
-                    isStarred: false,
-                    isRead: false,
-                    authorUid: currentUser ? currentUser.uid : 'anonymous'
+                // Mengirim data ke layanan FormSubmit.co
+                const response = await fetch(`https://formsubmit.co/ajax/${EMAIL_TUJUAN}`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        Pesan_Dari_Follower: content,
+                        _subject: "Yeay! Ada Feedback Baru di Mifa's Corner ♡",
+                        _template: "box"
+                    })
                 });
 
-                // Reset Form
-                contentInput.value = '';
-                updateCharCount();
+                if (response.ok) {
+                    // Berhasil dikirim!
+                    
+                    // Kosongkan form
+                    contentInput.value = '';
+                    updateCharCount();
 
-                // Check if email notification trigger is configured
-                triggerOptionalEmailNotification(content);
+                    // Show Confetti Effect
+                    try {
+                        confetti({
+                            particleCount: 80,
+                            spread: 70,
+                            origin: { y: 0.6 },
+                            colors: ['#9C6153', '#EAD7C5', '#4A3B32', '#f3a683']
+                        });
+                    } catch(confettiErr) {
+                        console.log("Confetti skipped");
+                    }
 
-                // Show Confetti Effect
-                try {
-                    confetti({
-                        particleCount: 80,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: ['#9C6153', '#EAD7C5', '#4A3B32', '#f3a683']
-                    });
-                } catch(confettiErr) {
-                    console.log("Confetti skipped");
-                }
-
-                // Show Success Modal
-                const modal = document.getElementById('successModal');
-                if(modal) {
-                    modal.classList.remove('opacity-0', 'pointer-events-none');
-                    modal.querySelector('div').classList.remove('scale-95');
-                    modal.querySelector('div').classList.add('scale-100');
+                    // Tampilkan Pesan Sukses
+                    const modal = document.getElementById('successModal');
+                    if(modal) {
+                        modal.classList.remove('opacity-0', 'pointer-events-none');
+                        modal.querySelector('div').classList.remove('scale-95');
+                        modal.querySelector('div').classList.add('scale-100');
+                    } else {
+                        alert("Terima kasih! Masukan kamu berhasil dikirim ♡");
+                    }
                 } else {
-                    alertCustom("Terima kasih! Masukan kamu berhasil dikirim ♡");
+                    throw new Error("Gagal merespon");
                 }
 
             } catch (err) {
                 console.error("Error sending feedback:", err);
-                alertCustom("Terjadi kesalahan saat mengirim masukan. Pastikan koneksi internet stabil.");
+                alert("Aduh, terjadi kesalahan saat mengirim masukan. Pastikan koneksi internet stabil.");
             } finally {
-                // FORCE RESET BUTTON STATE
+                // Kembalikan tombol seperti semula
                 submitBtn.disabled = false;
                 submitBtnText.textContent = "Kirim Feedback";
                 submitBtnIcon.className = "fa-regular fa-paper-plane text-sm";
@@ -511,280 +356,6 @@
             modal.querySelector('div').classList.remove('scale-100');
             modal.querySelector('div').classList.add('scale-95');
         }
-
-        function openAdminModal() {
-            const modal = document.getElementById('adminModal');
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-
-            // If already logged in, show dashboard directly
-            if (sessionStorage.getItem('mifa_admin_logged_in') === 'true') {
-                showDashboardView();
-            } else {
-                showLoginView();
-            }
-        }
-
-        function closeAdminModal() {
-            const modal = document.getElementById('adminModal');
-            modal.classList.add('opacity-0', 'pointer-events-none');
-        }
-
-        function showLoginView() {
-            document.getElementById('adminLoginView').classList.remove('hidden');
-            document.getElementById('adminDashboardView').classList.add('hidden');
-        }
-
-        function showDashboardView() {
-            document.getElementById('adminLoginView').classList.add('hidden');
-            document.getElementById('adminDashboardView').classList.remove('hidden');
-            subscribeToFeedbacks();
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const passwordInput = document.getElementById('adminPassword');
-            const errorMsg = document.getElementById('loginError');
-
-            // Default simple admin password:
-            if (passwordInput.value.trim() === 'gojo098') {
-                errorMsg.classList.add('hidden');
-                sessionStorage.setItem('mifa_admin_logged_in', 'true');
-                passwordInput.value = '';
-                showDashboardView();
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        function logoutAdmin() {
-            sessionStorage.removeItem('mifa_admin_logged_in');
-            if (unsubscribeSnap) {
-                unsubscribeSnap();
-                unsubscribeSnap = null;
-            }
-            showLoginView();
-        }
-
-        function subscribeToFeedbacks() {
-            if (unsubscribeSnap) return; // Already subscribed
-
-            const feedbackCol = collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks');
-
-            // Simple collection query without complex orderBy to prevent indexing errors (Rule 2)
-            unsubscribeSnap = onSnapshot(feedbackCol, (snapshot) => {
-                let items = [];
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    items.push({
-                        id: docSnap.id,
-                        content: data.content || '',
-                        createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
-                        isStarred: data.isStarred || false,
-                        isRead: data.isRead || false,
-                        authorUid: data.authorUid || 'anonymous'
-                    });
-                });
-
-                // Client-side sorting: Latest first
-                items.sort((a, b) => b.createdAt - a.createdAt);
-
-                allFeedbacks = items;
-                renderFeedbacks();
-            }, (error) => {
-                console.error("Firestore sync error:", error);
-                document.getElementById('feedbackListContainer').innerHTML = `
-                    <div class="text-center py-8 text-red-500 text-xs">
-                        Gagal memuat data. Periksa koneksi internet kamu.
-                    </div>
-                `;
-            });
-        }
-
-        function renderFeedbacks() {
-            const container = document.getElementById('feedbackListContainer');
-            const totalCount = document.getElementById('totalFeedbackCount');
-            const searchVal = (document.getElementById('searchInput')?.value || '').toLowerCase();
-
-            let filtered = allFeedbacks.filter(item => {
-                const matchesSearch = item.content.toLowerCase().includes(searchVal);
-                if (currentFilter === 'starred') {
-                    return matchesSearch && item.isStarred;
-                }
-                return matchesSearch;
-            });
-
-            totalCount.textContent = allFeedbacks.length;
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 text-cozy-muted">
-                        <i class="fa-regular fa-comment-dots text-3xl mb-2 text-cozy-muted/40"></i>
-                        <p class="text-xs">Belum ada masukan yang cocok.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = filtered.map(item => {
-                const dateStr = item.createdAt.toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                return `
-                    <div class="bg-cozy-inner p-4 rounded-2xl border border-cozy-border hover:border-cozy-terracotta/40 transition-all text-xs space-y-2 relative group">
-                        <div class="flex items-center justify-between gap-2 text-cozy-muted">
-                            <span class="flex items-center gap-1.5 font-medium text-[11px] text-cozy-muted/80">
-                                <i class="fa-regular fa-clock"></i> ${dateStr}
-                            </span>
-                            <div class="flex items-center gap-1">
-                                <button onclick="toggleStar('${item.id}', ${!item.isStarred})" title="${item.isStarred ? 'Hapus Bintang' : 'Berikan Bintang'}" class="p-1.5 rounded-lg hover:bg-cozy-bg text-cozy-muted hover:text-amber-500 transition">
-                                    <i class="${item.isStarred ? 'fa-solid fa-star text-amber-500' : 'fa-regular fa-star'}"></i>
-                                </button>
-                                <button onclick="copyFeedbackText(\`${escapeHtml(item.content)}\`)" title="Salin Teks" class="p-1.5 rounded-lg hover:bg-cozy-bg text-cozy-muted hover:text-cozy-text transition">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                                <button onclick="deleteFeedbackItem('${item.id}')" title="Hapus Masukan" class="p-1.5 rounded-lg hover:bg-red-50 text-cozy-muted hover:text-red-500 transition">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <p class="text-cozy-text text-sm leading-relaxed whitespace-pre-wrap font-sans">${escapeHtml(item.content)}</p>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function toggleStar(docId, newStarredState) {
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'feedbacks', docId);
-                await updateDoc(docRef, { isStarred: newStarredState });
-            } catch (err) {
-                console.error("Error updating star state:", err);
-            }
-        }
-
-        async function deleteFeedbackItem(docId) {
-            if (!window.confirmCustom("Apakah kamu yakin ingin menghapus masukan ini?")) return;
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'feedbacks', docId);
-                await deleteDoc(docRef);
-            } catch (err) {
-                console.error("Error deleting feedback:", err);
-            }
-        }
-
-        function copyFeedbackText(text) {
-            const tempInput = document.createElement('textarea');
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            showToast("Teks masukan disalin ke clipboard! ✨");
-        }
-
-        function filterFeedbacks() {
-            renderFeedbacks();
-        }
-
-        function setFilter(type) {
-            currentFilter = type;
-            const btnAll = document.getElementById('filterAll');
-            const btnStarred = document.getElementById('filterStarred');
-
-            if (type === 'all') {
-                btnAll.className = "px-3 py-1 rounded-lg bg-cozy-terracotta text-white font-medium";
-                btnStarred.className = "px-3 py-1 rounded-lg text-cozy-muted hover:text-cozy-text";
-            } else {
-                btnStarred.className = "px-3 py-1 rounded-lg bg-cozy-terracotta text-white font-medium";
-                btnAll.className = "px-3 py-1 rounded-lg text-cozy-muted hover:text-cozy-text";
-            }
-            renderFeedbacks();
-        }
-
-        function exportFeedbackCSV() {
-            if (allFeedbacks.length === 0) {
-                alertCustom("Belum ada data untuk di-export.");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,No,Tanggal,Masukan,Bintang\n";
-            allFeedbacks.forEach((item, index) => {
-                const cleanContent = `"${item.content.replace(/"/g, '""')}"`;
-                const dateStr = item.createdAt.toISOString();
-                csvContent += `${index + 1},${dateStr},${cleanContent},${item.isStarred ? 'Ya' : 'Tidak'}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `mifas_corner_feedbacks_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function toggleEmailSettings() {
-            const panel = document.getElementById('emailSettingsPanel');
-            panel.classList.toggle('hidden');
-        }
-
-        function saveTargetEmail() {
-            const input = document.getElementById('targetEmailInput');
-            const email = input.value.trim();
-            if (email) {
-                localStorage.setItem('mifa_target_email', email);
-                showToast("Email notifikasi disimpan! 📩");
-            } else {
-                localStorage.removeItem('mifa_target_email');
-                showToast("Pengaturan email dihapus.");
-            }
-        }
-
-        function triggerOptionalEmailNotification(feedbackContent) {
-            const targetEmail = localStorage.getItem('mifa_target_email');
-            if (targetEmail) {
-                // Generates a quick mailto link trigger or console log for notifications
-                const subject = encodeURIComponent("Feedback Baru di Mifa's Corner! ♡");
-                const body = encodeURIComponent(`Halo Mifa!\n\nKamu mendapatkan masukan baru dari followers:\n\n"${feedbackContent}"\n\nCek seluruh masukan di dashboard kamu!`);
-                console.log(`Notification trigger ready for: ${targetEmail}`);
-            }
-        }
-
-        function escapeHtml(str) {
-            return str
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-cozy-text text-white px-5 py-2.5 rounded-full text-xs shadow-lg z-50 animate-bounce transition-all';
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        function alertCustom(message) {
-            showToast(message);
-        }
-
-        window.confirmCustom = function(message) {
-            // Safe inline check for critical admin actions
-            return window.confirm(message);
-        }
-
     </script>
 </body>
 </html>
